@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clases Universitarias de Física, Matemáticas, IA e Ingeniería</title>
+<meta name="description" content="Clases particulares de nivel universitario en Física, Matemáticas, Química, Inteligencia Artificial e Ingeniería Informática. Dirección de TFG y TFM.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg:     '#0B0C0F',
+          bgalt:  '#101319',
+          panel:  '#15181E',
+          panel2: '#191C22',
+          edge:   '#262B33',
+          edge2:  '#31363F',
+          ink:    '#F5F6F8',
+          dim:    '#C9CFD8',
+          faint:  '#9AA2AE',
+          brass:  '#C9A227',
+          brassd: '#8E7018',
+          signal: '#6FC3E0',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'ui-serif', 'serif'],
+          body: ['Inter', 'ui-sans-serif', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root { color-scheme: dark; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body { background-color: #0B0C0F; }
+
+  ::selection { background: #C9A227; color: #0B0C0F; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #0B0C0F; }
+  ::-webkit-scrollbar-thumb { background: #262B33; border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: #31363F; }
+
+  :focus-visible {
+    outline: 2px solid #C9A227;
+    outline-offset: 3px;
+  }
+
+  /* ---- Signature: circuit-trace rail ---- */
+  .rail-line {
+    position: absolute;
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, #262B33 6%, #262B33 94%, transparent);
+  }
+  .rail-dot {
+    width: 11px;
+    height: 11px;
+    border: 1px solid #31363F;
+    background: #0B0C0F;
+    transform: rotate(45deg);
+    transition: all .35s ease;
+  }
+  .rail-item.is-active .rail-dot {
+    border-color: #E8C34A;
+    background: #E8C34A;
+    box-shadow: 0 0 0 4px rgba(232,195,74,0.18);
+  }
+  .rail-item.is-active .rail-label { color: #F5F6F8; opacity: 1; transform: translateX(0); font-weight: 500; }
+  .rail-label {
+    color: #C9CFD8;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all .35s ease;
+    white-space: nowrap;
+  }
+  .rail-item:hover .rail-label { opacity: 1; transform: translateX(0); }
+
+  /* ---- Hero circuit background ---- */
+  .field-lines path {
+    stroke: #1D2129;
+    stroke-width: 1;
+    fill: none;
+  }
+  .field-lines .pulse {
+    stroke: #C9A227;
+    stroke-width: 1.2;
+    stroke-dasharray: 3 240;
+    opacity: .55;
+    animation: travel 7s linear infinite;
+  }
+  .field-lines .pulse.-signal { stroke: #4C9CB8; animation-duration: 9s; animation-delay: 1.4s; }
+  .field-lines .pulse.-d2 { animation-delay: 2.6s; animation-duration: 8s; }
+  .field-lines .pulse.-d3 { animation-delay: 4.1s; animation-duration: 6.4s; }
+  @keyframes travel { to { stroke-dashoffset: -420; } }
+
+  /* ---- Node graph (hero) ---- */
+  .graph-node {
+    transition: transform .25s ease, border-color .25s ease, background-color .25s ease;
+  }
+  .graph-node:hover, .graph-node:focus-visible {
+    transform: translateY(-2px);
+    border-color: #C9A227;
+  }
+  .graph-link line { stroke: #262B33; stroke-width: 1; transition: stroke .3s ease; }
+  .graph-wrap:hover .graph-link line { stroke: #31363F; }
+
+  /* ---- Accordion ---- */
+  .node-card { transition: border-color .3s ease, background-color .3s ease; }
+  .node-card[data-open="true"] { border-color: #3a3223; background-color: #15181E; }
+  .node-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .4s cubic-bezier(.4,0,.2,1);
+  }
+  .node-card[data-open="true"] .node-body { grid-template-rows: 1fr; }
+  .node-body-inner { overflow: hidden; }
+  .node-chevron { transition: transform .35s ease; }
+  .node-card[data-open="true"] .node-chevron { transform: rotate(45deg); }
+
+  /* ---- Fade-up reveal ---- */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  .text-balance { text-wrap: balance; }
+</style>
+</head>
+
+<body class="bg-bg text-ink font-body antialiased selection:bg-brass selection:text-bg">
+
+  <!-- ============ NAV ============ -->
+  <header class="fixed top-0 inset-x-0 z-40 border-b border-edge/70 bg-bg/85 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+      <a href="#inicio" class="group">
+        <span class="inline-flex items-center gap-2 rounded-full border border-brass/40 bg-brass/10 px-3.5 py-1.5 group-hover:border-brass/70 group-hover:bg-brass/15 transition-colors">
+          <span class="w-1.5 h-1.5 bg-brass rounded-full shrink-0"></span>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-white uppercase">LCDO. en Ciencias Físicas &amp; DEA en IA Avanzada</span>
+        </span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-8 font-mono text-[12px] tracking-wide text-dim">
+        <a href="#areas" class="hover:text-ink transition-colors">Áreas</a>
+        <a href="#autoridad" class="hover:text-ink transition-colors">Formación</a>
+        <a href="#tfg-tfm" class="hover:text-ink transition-colors">TFG · TFM</a>
+        <a href="#metodologia" class="hover:text-ink transition-colors">Método</a>
+      </nav>
+      <a href="#contacto" class="font-mono text-[12px] tracking-wide border border-edge2 hover:border-brass hover:text-brass transition-colors px-4 py-2">
+        Contactar →
+      </a>
+    </div>
+  </header>
+
+  <!-- ============ RAIL (desktop signature element) ============ -->
+  <div class="hidden xl:block fixed left-10 top-0 h-screen w-40 z-30 pointer-events-none">
+    <div class="relative h-full pointer-events-auto">
+      <div class="rail-line"></div>
+      <ul id="rail" class="absolute top-1/2 -translate-y-1/2 left-0 flex flex-col gap-7">
+        <li class="rail-item" data-target="inicio"><a href="#inicio" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">00 · Inicio</span></a></li>
+        <li class="rail-item" data-target="autoridad"><a href="#autoridad" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">01 · Formación</span></a></li>
+        <li class="rail-item" data-target="areas"><a href="#areas" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">02 · Áreas</span></a></li>
+        <li class="rail-item" data-target="tfg-tfm"><a href="#tfg-tfm" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">03 · TFG/TFM</span></a></li>
+        <li class="rail-item" data-target="metodologia"><a href="#metodologia" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">04 · Método</span></a></li>
+        <li class="rail-item" data-target="resultados"><a href="#resultados" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">05 · Resultados</span></a></li>
+        <li class="rail-item" data-target="contacto"><a href="#contacto" class="flex items-center gap-3"><span class="rail-dot shrink-0"></span><span class="rail-label font-mono text-[11px] tracking-wide">06 · Contacto</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="xl:pl-56">
+  <!-- ============ HERO ============ -->
+  <section id="inicio" class="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+    <svg class="field-lines absolute inset-0 w-full h-full opacity-70" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path d="M -50 120 H 300 V 260 H 700 V 90 H 1450"/>
+      <path class="pulse" d="M -50 120 H 300 V 260 H 700 V 90 H 1450"/>
+      <path d="M -50 700 H 220 V 560 H 620 V 760 H 980 V 600 H 1450"/>
+      <path class="pulse -signal" d="M -50 700 H 220 V 560 H 620 V 760 H 980 V 600 H 1450"/>
+      <path d="M 100 -50 V 200 H 480 V 500 H 260 V 950"/>
+      <path class="pulse -d2" d="M 100 -50 V 200 H 480 V 500 H 260 V 950"/>
+      <path d="M 1350 -50 V 260 H 980 V 420 H 1250 V 950"/>
+      <path class="pulse -d3" d="M 1350 -50 V 260 H 980 V 420 H 1250 V 950"/>
+    </svg>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-bg/40 to-bg"></div>
+
+    <div class="relative max-w-6xl mx-auto px-6 lg:px-10 w-full grid lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 rounded-full border border-brass/40 bg-brass/10 px-4 py-2 mb-6">
+          <span class="font-mono text-[11px] tracking-[0.2em] text-white uppercase">
+            <span class="text-brass" aria-hidden="true">◆</span> Docencia Universitaria de Alto Rendimiento
+          </span>
+        </div>
+        <h1 class="font-display font-medium text-[2.6rem] sm:text-6xl lg:text-[3.6rem] leading-[1.05] text-balance">
+          El rigor de la Física.<br>
+          La precisión de la Ingeniería.<br>
+          <span class="italic text-brass">La vanguardia de la IA.</span>
+        </h1>
+        <p class="mt-7 text-lg sm:text-xl text-white font-semibold leading-snug max-w-xl">
+          Mentoría universitaria y sesiones privadas de alto rendimiento <span class="text-dim font-normal">(individuales o grupos reducidos).</span>
+        </p>
+        <ul class="mt-6 space-y-3.5 max-w-xl">
+          <li class="flex gap-3">
+            <span class="text-brass text-sm mt-1 shrink-0" aria-hidden="true">◆</span>
+            <p class="text-dim leading-relaxed"><span class="text-white font-semibold">Áreas:</span> Física, Matemáticas, Química, IA e Ingeniería Informática.</p>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-brass text-sm mt-1 shrink-0" aria-hidden="true">◆</span>
+            <p class="text-dim leading-relaxed"><span class="text-white font-semibold">Metodología:</span> Resolución analítica y estructurada adaptada a exámenes universitarios.</p>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-brass text-sm mt-1 shrink-0" aria-hidden="true">◆</span>
+            <p class="text-dim leading-relaxed"><span class="text-white font-semibold">Proyectos:</span> Tutorización y Dirección especializada de TFG y TFM.</p>
+          </li>
+        </ul>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+          <a href="#contacto" class="inline-flex items-center gap-2 bg-brass text-bg font-medium px-6 py-3.5 hover:bg-[#E0B62E] transition-colors">
+            Solicitar primera clase
+          </a>
+          <a href="#areas" class="inline-flex items-center gap-2 border border-edge2 text-ink px-6 py-3.5 hover:border-brass hover:text-brass transition-colors">
+            Ver áreas de conocimiento
+          </a>
+        </div>
+        <p class="mt-6 font-mono text-[12px] text-faint tracking-wide">Modalidad online — presencial según disponibilidad geográfica</p>
+      </div>
+
+      <!-- Interactive knowledge graph -->
+      <div class="graph-wrap relative aspect-square max-w-md mx-auto w-full">
+        <svg class="graph-link absolute inset-0 w-full h-full" viewBox="0 0 400 400" aria-hidden="true">
+          <line x1="200" y1="200" x2="200" y2="55"/>
+          <line x1="200" y1="200" x2="345" y2="140"/>
+          <line x1="200" y1="200" x2="345" y2="290"/>
+          <line x1="200" y1="200" x2="200" y2="360"/>
+          <line x1="200" y1="200" x2="55" y2="290"/>
+          <line x1="200" y1="200" x2="55" y2="140"/>
+        </svg>
+
+        <a href="#autoridad" class="graph-node absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full border border-brass/60 bg-panel flex flex-col items-center justify-center text-center px-2">
+          <span class="font-mono text-[9px] text-brass tracking-widest">PERFIL</span>
+          <span class="font-display text-[13px] leading-tight mt-1">Físico &amp; DEA en IA</span>
+        </a>
+
+        <a href="#areas" class="graph-node absolute left-1/2 top-[13.75%] -translate-x-1/2 border border-edge2 bg-panel2 px-4 py-2.5 text-center">
+          <span class="block font-mono text-[9px] text-brass">01</span>
+          <span class="block text-sm">Física</span>
+        </a>
+        <a href="#areas" class="graph-node absolute left-[86.25%] top-[35%] -translate-x-1/2 -translate-y-1/2 border border-edge2 bg-panel2 px-4 py-2.5 text-center">
+          <span class="block font-mono text-[9px] text-brass">02</span>
+          <span class="block text-sm">Matemáticas</span>
+        </a>
+        <a href="#areas" class="graph-node absolute left-[86.25%] top-[72.5%] -translate-x-1/2 -translate-y-1/2 border border-edge2 bg-panel2 px-4 py-2.5 text-center">
+          <span class="block font-mono text-[9px] text-brass">03</span>
+          <span class="block text-sm">Química</span>
+        </a>
+        <a href="#areas" class="graph-node absolute left-1/2 top-[90%] -translate-x-1/2 -translate-y-1/2 border border-edge2 bg-panel2 px-4 py-2.5 text-center">
+          <span class="block font-mono text-[9px] text-brass">04</span>
+          <span class="block text-sm">IA &amp; Computación</span>
+        </a>
+        <a href="#areas" class="graph-node absolute left-[13.75%] top-[72.5%] -translate-x-1/2 -translate-y-1/2 border border-edge2 bg-panel2 px-4 py-2.5 text-center">
+          <span class="block font-mono text-[9px] text-brass">05</span>
+          <span class="block text-sm">Ing. Informática</span>
+        </a>
+        <a href="#tfg-tfm" class="graph-node absolute left-[13.75%] top-[35%] -translate-x-1/2 -translate-y-1/2 border border-signal/50 bg-panel2 px-4 py-2.5 text-center">
+          <span class="block font-mono text-[9px] text-signal">06</span>
+          <span class="block text-sm">TFG · TFM</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AUTORIDAD / CREDENCIALES ============ -->
+  <section id="autoridad" class="relative bg-bgalt border-t border-edge/70 py-24 lg:py-32">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10">
+      <div class="reveal grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20">
+        <div>
+          <p class="font-mono text-[12px] tracking-[0.2em] text-brass uppercase mb-4">Nodo 01 — Formación</p>
+          <h2 class="font-display text-3xl sm:text-4xl leading-tight text-balance">
+            Dos disciplinas, una misma exigencia
+          </h2>
+          <p class="mt-6 text-dim leading-relaxed">
+            La docencia se apoya en una formación dual, poco frecuente: la solidez de las Ciencias Físicas fundamentales y aplicadas junto con la ingeniería, unidas a la investigación en Inteligencia Artificial.
+          </p>
+        </div>
+
+        <div class="space-y-0 divide-y divide-edge/70 border-t border-edge/70">
+          <div class="py-6 grid sm:grid-cols-[10.5rem_1fr] gap-x-8 gap-y-1">
+            <span class="font-mono text-[12px] text-brass pt-0.5">GRADO</span>
+            <p class="text-lg text-ink">Licenciatura en Ciencias Físicas — Especialidad en Electricidad, Electrónica e Informática (Facultad de Ciencias, Universidad de Valencia).</p>
+          </div>
+          <div class="py-6 grid sm:grid-cols-[10.5rem_1fr] gap-x-8 gap-y-1">
+            <span class="font-mono text-[12px] text-brass pt-0.5 leading-relaxed">INVESTIGACIÓN /<br>POSGRADO</span>
+            <p class="text-lg text-ink">Diploma de Estudios Avanzados (DEA / Suficiencia Investigadora) en Inteligencia Artificial Avanzada (Dpto. de Informática y Automática, UNED).</p>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-edge/70 border border-edge/70">
+          <div class="px-6 py-7 text-center sm:text-left">
+            <p class="font-display text-3xl sm:text-4xl text-brass">+15 <span class="font-mono text-base align-middle text-ink">Años</span></p>
+            <p class="mt-2 font-mono text-[11px] tracking-wide text-dim uppercase">Experiencia docente especializada</p>
+          </div>
+          <div class="px-6 py-7 text-center sm:text-left">
+            <p class="font-display text-3xl sm:text-4xl text-brass">+300 <span class="font-mono text-base align-middle text-ink">Alumnos</span></p>
+            <p class="mt-2 font-mono text-[11px] tracking-wide text-dim uppercase">Universitarios e ingenieros preparados</p>
+          </div>
+          <div class="px-6 py-7 text-center sm:text-left">
+            <p class="font-display text-3xl sm:text-4xl text-brass">Dual</p>
+            <p class="mt-2 font-mono text-[11px] tracking-wide text-dim uppercase">Fundamentos Físico-Matemáticos + Inteligencia Artificial</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ÁREAS DE CONOCIMIENTO ============ -->
+  <section id="areas" class="relative py-24 lg:py-32 border-t border-edge/70">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10">
+      <div class="reveal max-w-2xl mb-14">
+        <p class="font-mono text-[12px] tracking-[0.2em] text-brass uppercase mb-4">Nodo 02 — Áreas de conocimiento</p>
+        <h2 class="font-display text-3xl sm:text-4xl leading-tight text-balance">Cinco campos. Un mismo grafo de conocimiento.</h2>
+        <p class="mt-5 text-dim leading-relaxed">
+          Cada área se trabaja con el mismo rigor y se conecta con las demás cuando el temario lo requiere. Despliega cada nodo para ver el contenido concreto.
+        </p>
+      </div>
+
+      <div id="accordion" class="space-y-3">
+
+        <article class="node-card reveal border border-edge/80 bg-panel/40" data-open="false">
+          <div class="w-full px-6 pt-6 pb-6">
+            <div class="flex items-start justify-between gap-6">
+              <span class="flex items-center gap-5">
+                <span class="font-mono text-brass text-sm">01</span>
+                <span class="font-display text-xl sm:text-2xl">Física</span>
+              </span>
+              <button class="node-toggle shrink-0 -mt-1 -mr-1 p-2" aria-expanded="false" aria-label="Mostrar asignaturas de Física">
+                <span class="node-chevron block w-4 h-4 relative">
+                  <span class="absolute inset-y-1/2 inset-x-0 h-px bg-brass"></span>
+                  <span class="absolute inset-x-1/2 inset-y-0 w-px bg-brass"></span>
+                </span>
+              </button>
+            </div>
+            <p class="text-dim mt-3 max-w-2xl">Cualquier nivel: Universidad (Facultades, Politécnico, Ingenierías, UNED) y 2º de Bachillerato.</p>
+          </div>
+          <div class="node-body">
+            <div class="node-body-inner px-6 pb-6 pt-1">
+              <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Fundamentos Físicos</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Mecánica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Fluidos</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Termodinámica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Ondas</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Campos Electromagnéticos</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Electricidad y Magnetismo</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Óptica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Electrónica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Automática (Control)</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Meteorología</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Máquinas Eléctricas</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Teoría de Máquinas</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Física Cuántica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Relatividad</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Física Nuclear</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Biofísica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Econofísica</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="node-card reveal border border-edge/80 bg-panel/40" data-open="false">
+          <div class="w-full px-6 pt-6 pb-6">
+            <div class="flex items-start justify-between gap-6">
+              <span class="flex items-center gap-5">
+                <span class="font-mono text-brass text-sm">02</span>
+                <span class="font-display text-xl sm:text-2xl">Matemáticas</span>
+              </span>
+              <button class="node-toggle shrink-0 -mt-1 -mr-1 p-2" aria-expanded="false" aria-label="Mostrar asignaturas de Matemáticas">
+                <span class="node-chevron block w-4 h-4 relative">
+                  <span class="absolute inset-y-1/2 inset-x-0 h-px bg-brass"></span>
+                  <span class="absolute inset-x-1/2 inset-y-0 w-px bg-brass"></span>
+                </span>
+              </button>
+            </div>
+            <p class="text-dim mt-3 max-w-2xl">Del fundamento a la aplicación, para Universidad y Bachillerato.</p>
+          </div>
+          <div class="node-body">
+            <div class="node-body-inner px-6 pb-6 pt-1">
+              <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Fundamentos Matemáticos</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Análisis Matemático</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Álgebra Lineal</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Probabilidad y Estadística</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Modelos Matemáticos aplicados</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="node-card reveal border border-edge/80 bg-panel/40" data-open="false">
+          <div class="w-full px-6 pt-6 pb-6">
+            <div class="flex items-start justify-between gap-6">
+              <span class="flex items-center gap-5">
+                <span class="font-mono text-brass text-sm">03</span>
+                <span class="font-display text-xl sm:text-2xl">Química</span>
+              </span>
+              <button class="node-toggle shrink-0 -mt-1 -mr-1 p-2" aria-expanded="false" aria-label="Mostrar asignaturas de Química">
+                <span class="node-chevron block w-4 h-4 relative">
+                  <span class="absolute inset-y-1/2 inset-x-0 h-px bg-brass"></span>
+                  <span class="absolute inset-x-1/2 inset-y-0 w-px bg-brass"></span>
+                </span>
+              </button>
+            </div>
+            <p class="text-dim mt-3 max-w-2xl">Estructura, reactividad y análisis, de lo general a lo aplicado.</p>
+          </div>
+          <div class="node-body">
+            <div class="node-body-inner px-6 pb-6 pt-1">
+              <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Química General</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Química Orgánica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Química Inorgánica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Bioquímica</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Química Analítica</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="node-card reveal border border-edge/80 bg-panel/40" data-open="false">
+          <div class="w-full px-6 pt-6 pb-6">
+            <div class="flex items-start justify-between gap-6">
+              <span class="flex items-center gap-5">
+                <span class="font-mono text-brass text-sm">04</span>
+                <span class="font-display text-xl sm:text-2xl">Inteligencia Artificial &amp; Ciencia de Datos</span>
+              </span>
+              <button class="node-toggle shrink-0 -mt-1 -mr-1 p-2" aria-expanded="false" aria-label="Mostrar asignaturas de Inteligencia Artificial">
+                <span class="node-chevron block w-4 h-4 relative">
+                  <span class="absolute inset-y-1/2 inset-x-0 h-px bg-brass"></span>
+                  <span class="absolute inset-x-1/2 inset-y-0 w-px bg-brass"></span>
+                </span>
+              </button>
+            </div>
+            <p class="text-dim mt-3 max-w-2xl">Formación estructurada por los principales paradigmas de la IA, para universitarios y empresas.</p>
+          </div>
+          <div class="node-body">
+            <div class="node-body-inner px-6 pb-6 pt-1 space-y-5">
+
+              <div>
+                <p class="font-mono text-[11px] text-signal tracking-wide mb-2">IA CONEXIONISTA Y APRENDIZAJE AUTOMÁTICO</p>
+                <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Machine Learning (regresión, clasificación, clustering, árboles de decisión, SVM, RL)</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Deep Learning (RNA, CNN, RNN, Transformers)</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">TensorFlow · Keras · PyTorch · Scikit-learn</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Ciencia de Datos y Minería de Datos</li>
+                </ul>
+              </div>
+              <div>
+                <p class="font-mono text-[11px] text-signal tracking-wide mb-2">IA SIMBÓLICA Y RAZONAMIENTO</p>
+                <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Sistemas Expertos y Basados en Conocimiento</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Lógica Difusa · Redes Bayesianas · Ontologías</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Razonamiento con Incertidumbre y Basado en Casos</li>
+                </ul>
+              </div>
+              <div>
+                <p class="font-mono text-[11px] text-signal tracking-wide mb-2">IA GENERATIVA Y LLMS</p>
+                <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Arquitecturas Transformer, GPT, BERT</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Generación de texto, imágenes (GANs, difusión) y código</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Prompt Engineering y Ajuste Fino (Fine-Tuning)</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Desarrollo de Chatbots Avanzados</li>
+                </ul>
+              </div>
+              <div>
+                <p class="font-mono text-[11px] text-signal tracking-wide mb-2">IA AGÉNTICA Y SISTEMAS MULTIAGENTE</p>
+                <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Sistemas Inteligentes y Planificación</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Teoría de Agentes (reactivos, deliberativos, híbridos)</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Coordinación, comunicación y negociación entre agentes</li>
+                </ul>
+              </div>
+              <div>
+                <p class="font-mono text-[11px] text-signal tracking-wide mb-2">IA EVOLUTIVA, OPTIMIZACIÓN Y LENGUAJES DECLARATIVOS</p>
+                <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Algoritmos Genéticos y Meméticos</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Computación Evolutiva y Optimización Bioinspirada</li>
+                  <li class="border border-edge2 px-3 py-1.5 text-dim">Prolog · Haskell · Lisp</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="node-card reveal border border-edge/80 bg-panel/40" data-open="false">
+          <div class="w-full px-6 pt-6 pb-6">
+            <div class="flex items-start justify-between gap-6">
+              <span class="flex items-center gap-5">
+                <span class="font-mono text-brass text-sm">05</span>
+                <span class="font-display text-xl sm:text-2xl">Ingeniería Informática</span>
+              </span>
+              <button class="node-toggle shrink-0 -mt-1 -mr-1 p-2" aria-expanded="false" aria-label="Mostrar asignaturas de Ingeniería Informática">
+                <span class="node-chevron block w-4 h-4 relative">
+                  <span class="absolute inset-y-1/2 inset-x-0 h-px bg-brass"></span>
+                  <span class="absolute inset-x-1/2 inset-y-0 w-px bg-brass"></span>
+                </span>
+              </button>
+            </div>
+            <p class="text-dim mt-3 max-w-2xl">Refuerzo y preparación especializada en las asignaturas troncales y avanzadas del Grado.</p>
+          </div>
+          <div class="node-body">
+            <div class="node-body-inner px-6 pb-6 pt-1">
+              <ul class="flex flex-wrap gap-2 font-mono text-[12px]">
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Programación Orientada a Objetos (Java, Python, C/C++, C#, Pascal/Delphi, VB, R)</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Estructuras de Datos</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Programación Concurrente</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Fundamentos de Sistemas Operativos</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Estructura y Tecnología de Computadores</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Teoría de Autómatas y Lenguajes Formales</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Diseño e Implementación de Compiladores (Flex, Bison)</li>
+                <li class="border border-edge2 px-3 py-1.5 text-dim">Paradigmas de la Computación</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TFG / TFM ============ -->
+  <section id="tfg-tfm" class="relative bg-bgalt border-t border-edge/70 py-24 lg:py-32">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10">
+      <div class="reveal grid lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-center">
+        <div>
+          <p class="font-mono text-[12px] tracking-[0.2em] text-signal uppercase mb-4">Nodo 03 — TFG · TFM</p>
+          <h2 class="font-display text-3xl sm:text-4xl leading-tight text-balance">Dirección de Trabajos Fin de Grado y Fin de Máster</h2>
+          <p class="mt-6 text-dim leading-relaxed max-w-lg">
+            Acompañamiento técnico y metodológico completo, aplicable tanto a proyectos de Ingeniería como de Ciencias e Inteligencia Artificial.
+          </p>
+        </div>
+        <div class="border border-edge/80 divide-y divide-edge/70">
+          <div class="flex gap-5 px-6 py-5">
+            <span class="font-mono text-signal text-sm shrink-0">01</span>
+            <p class="text-ink">Planteamiento del problema y definición de objetivos.</p>
+          </div>
+          <div class="flex gap-5 px-6 py-5">
+            <span class="font-mono text-signal text-sm shrink-0">02</span>
+            <p class="text-ink">Diseño metodológico y elección de herramientas técnicas.</p>
+          </div>
+          <div class="flex gap-5 px-6 py-5">
+            <span class="font-mono text-signal text-sm shrink-0">03</span>
+            <p class="text-ink">Desarrollo técnico: implementación, análisis y resultados.</p>
+          </div>
+          <div class="flex gap-5 px-6 py-5">
+            <span class="font-mono text-signal text-sm shrink-0">04</span>
+            <p class="text-ink">Redacción científica del documento final.</p>
+          </div>
+          <div class="flex gap-5 px-6 py-5">
+            <span class="font-mono text-signal text-sm shrink-0">05</span>
+            <p class="text-ink">Preparación de la defensa oral ante el tribunal.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METODOLOGÍA ============ -->
+  <section id="metodologia" class="relative py-24 lg:py-32 border-t border-edge/70">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10">
+      <div class="reveal max-w-2xl mb-14">
+        <p class="font-mono text-[12px] tracking-[0.2em] text-brass uppercase mb-4">Nodo 04 — Metodología</p>
+        <h2 class="font-display text-3xl sm:text-4xl leading-tight text-balance">Una metodología, cuatro principios fijos</h2>
+      </div>
+
+      <div class="reveal grid sm:grid-cols-2 gap-px bg-edge/70 border border-edge/70">
+        <div class="bg-bg p-8">
+          <p class="font-mono text-[11px] text-brass mb-3">01</p>
+          <h3 class="font-display text-xl mb-3">Contenido personalizado</h3>
+          <p class="text-dim leading-relaxed text-sm">Adaptación exacta al plan de estudios, la asignatura, el proyecto profesional o el examen concreto del alumno.</p>
+        </div>
+        <div class="bg-bg p-8">
+          <p class="font-mono text-[11px] text-brass mb-3">02</p>
+          <h3 class="font-display text-xl mb-3">Enfoque práctico</h3>
+          <p class="text-dim leading-relaxed text-sm">Prioridad en la comprensión profunda de los conceptos y su aplicación directa, para superar asignaturas o desarrollar proyectos reales.</p>
+        </div>
+        <div class="bg-bg p-8">
+          <p class="font-mono text-[11px] text-brass mb-3">03</p>
+          <h3 class="font-display text-xl mb-3">Temarios actualizados</h3>
+          <p class="text-dim leading-relaxed text-sm">Desde los fundamentos de la programación y la IA Simbólica, hasta Machine Learning, Deep Learning, IA Generativa y Sistemas Agénticos.</p>
+        </div>
+        <div class="bg-bg p-8">
+          <p class="font-mono text-[11px] text-brass mb-3">04</p>
+          <h3 class="font-display text-xl mb-3">Modalidad flexible</h3>
+          <p class="text-dim leading-relaxed text-sm">Clases online con herramientas interactivas y material compartido, o presenciales según disponibilidad geográfica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTADOS / POR QUÉ ============ -->
+  <section id="resultados" class="relative bg-bgalt border-t border-edge/70 py-24 lg:py-32">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10">
+      <div class="reveal grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20">
+        <div>
+          <p class="font-mono text-[12px] tracking-[0.2em] text-brass uppercase mb-4">Nodo 05 — Resultados</p>
+          <h2 class="font-display text-3xl sm:text-4xl leading-tight text-balance">Por qué este enfoque funciona</h2>
+          <p class="mt-6 text-dim leading-relaxed">
+            La combinación de rigor académico y orientación práctica se traduce en resultados consistentes, curso tras curso.
+          </p>
+        </div>
+
+        <ul class="space-y-0 divide-y divide-edge/70 border-t border-edge/70">
+          <li class="py-6 flex gap-5">
+            <span class="w-1.5 h-1.5 mt-2.5 bg-brass rotate-45 shrink-0"></span>
+            <p class="text-lg text-ink">Experiencia docente comprobada, con numerosos alumnos que han superado sus dificultades en ciencias e ingeniería.</p>
+          </li>
+          <li class="py-6 flex gap-5">
+            <span class="w-1.5 h-1.5 mt-2.5 bg-brass rotate-45 shrink-0"></span>
+            <p class="text-lg text-ink">Un porcentaje de éxito elevado, sostenido por una metodología de enseñanza puesta a prueba en Mentoría Universitaria &amp; Sesiones Privadas de Alto Rendimiento (Individualizadas o Grupos Reducidos) y academias.</p>
+          </li>
+          <li class="py-6 flex gap-5">
+            <span class="w-1.5 h-1.5 mt-2.5 bg-brass rotate-45 shrink-0"></span>
+            <p class="text-lg text-ink">Enfoque personalizado, adaptado al nivel de conocimiento y a los objetivos concretos de cada alumno.</p>
+          </li>
+          <li class="py-6 flex gap-5">
+            <span class="w-1.5 h-1.5 mt-2.5 bg-brass rotate-45 shrink-0"></span>
+            <p class="text-lg text-ink">Técnicas didácticas interactivas y visuales, orientadas a un aprendizaje efectivo y duradero.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACTO ============ -->
+  <section id="contacto" class="relative py-24 lg:py-32 border-t border-edge/70">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10">
+      <div class="reveal grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20">
+        <div>
+          <p class="font-mono text-[12px] tracking-[0.2em] text-brass uppercase mb-4">Nodo 06 — Contacto</p>
+          <h2 class="font-display text-3xl sm:text-4xl leading-tight text-balance">Empecemos por tu asignatura, tu proyecto o tu examen.</h2>
+          <p class="mt-6 text-dim leading-relaxed max-w-md">
+            Escribe un mensaje con tu área de interés y responderé para concretar una primera clase de consulta.
+          </p>
+
+          <div class="mt-10 space-y-4 font-mono text-sm">
+            <a href="mailto:tu@email.com" class="flex items-center gap-3 text-ink hover:text-brass transition-colors w-fit">
+              <span class="text-brass">Email</span>
+              <span class="border-b border-dashed border-edge2">tu@email.com</span>
+            </a>
+            <div class="flex items-center gap-3 text-ink w-fit">
+              <span class="text-brass">Teléfono</span>
+              <span class="border-b border-dashed border-edge2">+34 000 000 000</span>
+            </div>
+          </div>
+          <p class="mt-6 text-[12px] text-faint font-mono leading-relaxed max-w-md">* Sustituye el email y el teléfono de contacto por tus datos reales antes de publicar la página.</p>
+        </div>
+
+        <form id="contact-form" class="border border-edge/80 p-7 sm:p-9 bg-panel/40 space-y-6">
+          <div>
+            <label for="name" class="block font-mono text-[11px] tracking-wide text-dim mb-2">NOMBRE</label>
+            <input id="name" name="name" type="text" required
+              class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint transition-colors"
+              placeholder="Tu nombre">
+          </div>
+          <div>
+            <label for="email" class="block font-mono text-[11px] tracking-wide text-dim mb-2">EMAIL</label>
+            <input id="email" name="email" type="email" required
+              class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint transition-colors"
+              placeholder="tu@email.com">
+          </div>
+          <div>
+            <label for="area" class="block font-mono text-[11px] tracking-wide text-dim mb-2">ÁREA DE INTERÉS</label>
+            <select id="area" name="area"
+              class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink transition-colors">
+              <option class="bg-panel">Física</option>
+              <option class="bg-panel">Matemáticas</option>
+              <option class="bg-panel">Química</option>
+              <option class="bg-panel">Inteligencia Artificial &amp; Computación</option>
+              <option class="bg-panel">Ingeniería Informática</option>
+              <option class="bg-panel">TFG / TFM</option>
+            </select>
+          </div>
+          <div>
+            <label for="message" class="block font-mono text-[11px] tracking-wide text-dim mb-2">MENSAJE</label>
+            <textarea id="message" name="message" rows="3" required
+              class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint resize-none transition-colors"
+              placeholder="Cuéntame brevemente tu asignatura, curso o proyecto"></textarea>
+          </div>
+          <button type="submit" class="w-full bg-brass text-bg font-medium py-3.5 hover:bg-[#E0B62E] transition-colors">
+            Enviar consulta
+          </button>
+          <p id="form-note" class="font-mono text-[11px] text-faint text-center" aria-live="polite">Se abrirá tu cliente de correo con el mensaje listo para enviar.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-edge/70 py-10">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="font-mono text-[11px] text-faint tracking-wide">© <span id="year"></span> · Clases universitarias de Física, Matemáticas, Química, IA e Ingeniería</p>
+      <p class="font-mono text-[11px] text-faint tracking-wide">LCDO. en Físicas &amp; DEA en IA</p>
+    </div>
+  </footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Accordion
+  document.querySelectorAll('.node-card').forEach(card => {
+    const btn = card.querySelector('.node-toggle');
+    btn.addEventListener('click', () => {
+      const isOpen = card.getAttribute('data-open') === 'true';
+      card.setAttribute('data-open', String(!isOpen));
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+
+  // Rail active state via IntersectionObserver
+  const railItems = document.querySelectorAll('.rail-item');
+  const sections = [...railItems].map(item => document.getElementById(item.dataset.target));
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const item = document.querySelector(`.rail-item[data-target="${entry.target.id}"]`);
+        if (!item) return;
+        if (entry.isIntersecting) {
+          railItems.forEach(i => i.classList.remove('is-active'));
+          item.classList.add('is-active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    sections.forEach(sec => sec && io.observe(sec));
+  }
+
+  // Reveal on scroll
+  if ('IntersectionObserver' in window) {
+    const revealIO = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+  }
+
+  // Contact form -> mailto
+  const form = document.getElementById('contact-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const area = form.area.value;
+    const message = form.message.value.trim();
+    const subject = encodeURIComponent(`Consulta de clases — ${area}`);
+    const body = encodeURIComponent(
+      `Nombre: ${name}\nEmail: ${email}\nÁrea de interés: ${area}\n\nMensaje:\n${message}`
+    );
+    window.location.href = `mailto:tu@email.com?subject=${subject}&body=${body}`;
+  });
+</script>
+
+</body>
+</html>
