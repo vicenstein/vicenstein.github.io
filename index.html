@@ -695,10 +695,10 @@
           </p>
         </div>
 
-        <form id="formulario" action="https://formsubmit.co/vte33@hotmail.com" method="POST" enctype="multipart/form-data" class="border border-edge/80 p-7 sm:p-9 bg-panel/40 space-y-6">
+        <form id="formulario" action="https://formsubmit.co/44de98536ef5e8a7d86dba891e851daf" method="POST" class="border border-edge/80 p-7 sm:p-9 bg-panel/40 space-y-6">
           <input type="hidden" name="_subject" value="Nueva consulta — Landing de clases universitarias">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="true">
+          <input type="hidden" name="_captcha" value="false">
 
           <div>
             <label for="name" class="block font-mono text-[11px] tracking-wide text-dim mb-2">NOMBRE <span class="text-brass">*</span></label>
@@ -739,21 +739,10 @@
           </div>
 
           <div>
-            <label for="enlace" class="block font-mono text-[11px] tracking-wide text-dim mb-2">ENLACE A DRIVE / DROPBOX <span class="text-faint normal-case">(si tienes mucho material)</span></label>
-            <input id="enlace" name="Enlace Drive / Dropbox" type="url"
+            <label for="enlace" class="block font-mono text-[11px] tracking-wide text-brass mb-2">Enlace a Google Drive / Dropbox / OneDrive <span class="text-faint normal-case">(Opcional)</span></label>
+            <input id="enlace" name="Enlace Drive / Dropbox / OneDrive" type="url"
               class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint transition-colors"
-              placeholder="https://drive.google.com/...">
-          </div>
-
-          <div>
-            <label for="archivo" class="block font-mono text-[11px] tracking-wide text-dim mb-2">ADJUNTAR ARCHIVO / PDF <span class="text-faint normal-case">(opcional)</span></label>
-            <label for="archivo"
-              class="group flex items-center justify-between gap-4 border border-dashed border-edge2 hover:border-brass px-4 py-3.5 cursor-pointer transition-colors">
-              <span id="file-label" class="text-sm text-dim group-hover:text-ink transition-colors truncate">Ningún archivo seleccionado</span>
-              <span class="shrink-0 font-mono text-[11px] tracking-wide text-brass border border-brass/40 bg-brass/10 px-3 py-1.5">Elegir archivo</span>
-            </label>
-            <input id="archivo" name="Adjunto" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" class="sr-only">
-            <p class="mt-2 text-[11px] font-mono text-faint">PDF, DOCX, JPG o PNG · Límite estándar recomendado: 5 MB</p>
+              placeholder="Pega aquí el enlace a tu carpeta de apuntes, ejercicios o temario...">
           </div>
 
           <button type="submit" id="submit-btn" class="w-full bg-brass text-bg font-semibold py-3.5 hover:bg-[#E0B62E] active:scale-[0.99] transition-all">
@@ -822,16 +811,6 @@
   // Contact form -> envío real vía FormSubmit
   const form = document.getElementById('formulario');
   const submitBtn = document.getElementById('submit-btn');
-  const fileInput = document.getElementById('archivo');
-  const fileLabel = document.getElementById('file-label');
-
-  if (fileInput && fileLabel) {
-    fileInput.addEventListener('change', () => {
-      fileLabel.textContent = fileInput.files.length
-        ? fileInput.files[0].name
-        : 'Ningún archivo seleccionado';
-    });
-  }
 
   if (form && submitBtn) {
     form.addEventListener('submit', () => {
