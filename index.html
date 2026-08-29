@@ -695,28 +695,29 @@
           </p>
         </div>
 
-        <form id="formulario" action="https://formsubmit.co/44de98536ef5e8a7d86dba891e851daf" method="POST" class="border border-edge/80 p-7 sm:p-9 bg-panel/40 space-y-6">
-          <input type="hidden" name="_subject" value="Nueva consulta — Landing de clases universitarias">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="false">
+        <form id="formulario" action="https://api.web3forms.com/submit" method="POST" class="border border-edge/80 p-7 sm:p-9 bg-panel/40 space-y-6">
+          <input type="hidden" name="access_key" value="7012e82f-f3a3-438c-b090-58898ce5e2f0">
+          <input type="hidden" name="subject" value="Nueva consulta de alumno — vicenstein.github.io">
+          <input type="hidden" name="from_name" value="Web Docencia Vicenstein">
+          <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
 
           <div>
             <label for="name" class="block font-mono text-[11px] tracking-wide text-dim mb-2">NOMBRE <span class="text-brass">*</span></label>
-            <input id="name" name="Nombre" type="text" required
+            <input id="name" name="name" type="text" required
               class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint transition-colors"
               placeholder="Tu nombre">
           </div>
 
           <div>
             <label for="email" class="block font-mono text-[11px] tracking-wide text-dim mb-2">EMAIL DEL ALUMNO <span class="text-brass">*</span></label>
-            <input id="email" name="Email" type="email" required
+            <input id="email" name="email" type="email" required
               class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint transition-colors"
               placeholder="tu@email.com">
           </div>
 
           <div>
             <label for="area" class="block font-mono text-[11px] tracking-wide text-dim mb-2">ASIGNATURA / ÁREA</label>
-            <select id="area" name="Asignatura / Área"
+            <select id="area" name="area"
               class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink transition-colors">
               <option class="bg-panel">Física</option>
               <option class="bg-panel">Fluidos</option>
@@ -733,14 +734,14 @@
 
           <div>
             <label for="message" class="block font-mono text-[11px] tracking-wide text-dim mb-2">MENSAJE <span class="text-brass">*</span></label>
-            <textarea id="message" name="Mensaje" rows="3" required
+            <textarea id="message" name="message" rows="3" required
               class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint resize-none transition-colors"
               placeholder="Cuéntame brevemente tu asignatura, curso o proyecto, y qué necesitas"></textarea>
           </div>
 
           <div>
             <label for="enlace" class="block font-mono text-[11px] tracking-wide text-brass mb-2">Enlace a Google Drive / Dropbox / OneDrive <span class="text-faint normal-case">(Opcional)</span></label>
-            <input id="enlace" name="Enlace Drive / Dropbox / OneDrive" type="url"
+            <input id="enlace" name="drive_link" type="url"
               class="w-full bg-transparent border-b border-edge2 focus:border-brass outline-none py-2.5 text-ink placeholder:text-faint transition-colors"
               placeholder="Pega aquí el enlace a tu carpeta de apuntes, ejercicios o temario...">
           </div>
@@ -808,7 +809,7 @@
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
   }
 
-  // Contact form -> envío real vía FormSubmit
+  // Contact form -> envío real vía Web3Forms
   const form = document.getElementById('formulario');
   const submitBtn = document.getElementById('submit-btn');
 
@@ -816,7 +817,7 @@
     form.addEventListener('submit', () => {
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando…';
-      // El formulario continúa su envío real (POST) hacia FormSubmit.
+      // El formulario continúa su envío real (POST) hacia Web3Forms.
     });
   }
 </script>
